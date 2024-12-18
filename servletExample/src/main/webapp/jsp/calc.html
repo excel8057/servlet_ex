@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+</head>
+<body>
+    <h2>계산기</h2><hr>
+    <form name="frm" action="/servletExample/calcServlet2" method="post">
+        <label for="num1"></label>
+        <input type="text" id="num1" name="num1" required>
+
+        <label for="operator"></label>
+        <select id="operator" name="operator">
+            <option value="+">+</option>
+            <option value="-">-</option>
+            <option value="*">*</option>
+            <option value="/">/</option>
+        </select>
+
+        <label for="num2"></label>
+        <input type="text" id="num2" name="num2" required>
+		<label> = </label>
+		<input type="text" name="result" id="result" readonly>
+		
+        <input type="submit" value="계산">
+        <input type="reset" value="다시입력">
+    </form>
+    <script src="../js/calc.js"></script>
+	<script src="../js/jquery-3.7.1.min.js"></script>
+</body>
+</html>

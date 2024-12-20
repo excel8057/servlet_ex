@@ -2,8 +2,18 @@ package com.config;
 
 import java.io.*;
 import javax.servlet.*;
+import javax.servlet.annotation.WebInitParam;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
+@WebServlet(
+	urlPatterns = {
+			"/configTest"
+	},
+	initParams = {
+			@WebInitParam(name = "charset", value = "UTF-8")
+	}
+)
 public class ServletConfigTestServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

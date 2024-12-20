@@ -33,7 +33,8 @@ public class SetServletContext extends HttpServlet {
 		out.println("<!DOCTYPE html><html>");
 		out.println("<head><meta charset='UTF-8' />");
 		out.println("<title>ServletContext 예제</title>");
-		out.println("<link rel='icon' href='data:,'></head>");
+		out.println("<link rel='icon' href='data:,'>");
+		out.println("<link rel='stylesheet' href='/servletExample/css/getContext.css'></head>");
 		out.println("<body><div>ServletContext 속성 설정</div>");
 		out.println("</body></html>");
 	}

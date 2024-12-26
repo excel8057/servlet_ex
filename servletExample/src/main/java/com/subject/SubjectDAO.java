@@ -41,6 +41,46 @@ public class SubjectDAO {
 	    }
 	    return list;
 	}
+	public ArrayList<SubjectVO> getSubjectTotal(SubjectVO vo){
+	    SubjectVO svo  = null;
+	    ArrayList<SubjectVO> list = new ArrayList<SubjectVO>();
+	    
+	    StringBuffer sql = new StringBuffer();
+	    sql.append("select no, s_num, s_name from subject");
+	    if(vo != null) {
+	    	sql.append(" where s_name like ?");
+	    }
+	    sql.append(" order by no");
+	    
+	    try(Connection conn = getConnection();
+	    	PreparedStatement pstmt = conn.prepareStatement(sql.toString());	
+	    		){
+	    	
+	    	if(vo != null) {
+	    		pstmt.setString(1,  "%" + vo.getSubjectName() + "%");
+	    	}
+	    	ResultSet rs = pstmt.executeQuery();
+	        //ResultSet의 결과에서 모든 행을 각각의 SubjectVO 객체에 저장
+	        while(rs.next()) {
+	            //한 행의 학과 정보를 저장할 VO 객체 생성
+	            svo = new SubjectVO();
+	            //한 행의 학과 정보를 VO 객체에  저장
+	            svo.setNo(rs.getInt("no"));
+	            svo.setSubjectNumber(rs.getString("s_num"));  
+	            svo.setSubjectName(rs.getString("s_name"));
+	
+	            // ArrayList 객체에 원소로 추가
+	            list.add(svo);
+	        }
+	    }catch(SQLException se) {
+	        System.out.println("조회에 문제가 있어 잠시 후에 다시 진행해 주세요.");
+	        se.printStackTrace();
+	    }catch (Exception e){
+	        System.err.println("error = [ "+e.getMessage()+" ]");
+	    }
+	    return list;
+	}
+	
     public String getSubjectNumber() {        
         String subjectNumber = "";
         
@@ -97,5 +137,82 @@ public class SubjectDAO {
         }  
         
         return success;
+    }
+    public boolean subjectUpdate(SubjectVO svo) {
+        boolean success = false;
+
+        StringBuffer sql = new StringBuffer();
+        sql.append("update subject set s_name = ? ");
+        sql.append("where s_num = ?");
+
+        try (Connection conn = getConnection();
+        	 PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+        	){
+ 
+            pstmt.setString(1, svo.getSubjectName());
+            pstmt.setString(2, svo.getSubjectNumber());
+
+            int i = pstmt.executeUpdate();
+            if(i == 1) {
+                success = true;
+            }
+        }catch(SQLException se) {
+            System.out.println("수정에 문제가 있어 잠시 후에 다시 진행해 주세요.");
+          //se.printStackTrace(); 오류 발생 시 확인
+        }catch (Exception e){
+            System.out.println("error = [ "+e+" ]");
+        } 
+        return success;
+    }
+    
+    public boolean subjectDelete(SubjectVO svo) {
+        boolean success = false;
+
+        StringBuffer sql = new StringBuffer();
+        sql.append("delete from subject where s_num = ?");
+        
+        try(Connection conn = getConnection();
+        	PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+        	) {
+
+            pstmt.setString(1, svo.getSubjectNumber());
+
+            int i = pstmt.executeUpdate();
+            if(i == 1) {
+                success = true;
+            }
+        }catch(SQLException se) {
+            System.out.println("삭제에 문제가 있어 잠시 후에 다시 진행해 주세요.");
+            se.printStackTrace();
+        }catch (Exception e){
+            System.out.println("error = [ "+e+" ]");
+        } 
+        return success;
+    }
+    public int studentDataCheck(SubjectVO svo) {
+        StringBuffer  sql    = new StringBuffer();
+        sql.append("select count(sd_num) from student ");
+        sql.append("where s_num = ?");
+
+        ResultSet rs = null;
+        int data = 0;
+        try (Connection con = getConnection();
+        	 PreparedStatement pstmt = con.prepareStatement(sql.toString());
+        	){
+
+            pstmt.setString(1, svo.getSubjectNumber());
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                data = rs.getInt(1);
+            }
+        } catch (SQLException se) {
+        	System.out.println("학과에 소속된 학생 조회 시 문제가 있어 잠시 후에 다시 진행해 주세요.");
+        	//se.printStackTrace(); 오류 발생 시 확인
+        } catch (Exception e) {
+            System.out.println("error = [ "+e+" ]");
+        } finally {
+           close(rs);
+        }
+        return data;
     }
 }

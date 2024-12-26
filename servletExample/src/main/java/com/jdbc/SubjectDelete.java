@@ -1,7 +1,6 @@
 package com.jdbc;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -13,34 +12,33 @@ import javax.servlet.http.HttpServletResponse;
 import com.subject.SubjectDAO;
 import com.subject.SubjectVO;
 
+
 /**
- * Servlet implementation class SubjectServlet
+ * Servlet implementation class SubjectDelete
  */
-@WebServlet("/list")
-public class SubjectServlet extends HttpServlet {
+@WebServlet("/delete")
+public class SubjectDelete extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		/*
-		 * SubjectDAO dao = new SubjectDAO();
-		 *  ArrayList<SubjectVO> list = dao.getSubjectTotal();
-		 */
+		request.setCharacterEncoding("UTF-8");
 		
-		SubjectVO vo = null;
-		String subjectName = request.getParameter("subjectName");
-		if(subjectName != null) {
-			vo = new SubjectVO();
-			vo.setSubjectName(subjectName);
-		}
+		SubjectVO vo = new SubjectVO();
+		//vo.setNo(Integer.parseInt(request.getParameter("no")));
+		vo.setSubjectNumber(request.getParameter("subjectNumber"));
 		
 		SubjectDAO dao = new SubjectDAO();
-		ArrayList<SubjectVO> list = dao.getSubjectTotal(vo);
-		request.setAttribute("list", list);
+		boolean result = dao.subjectDelete(vo);
 		
-		RequestDispatcher dispatcher = request.getRequestDispatcher("subject/subjectList.jsp");
-		dispatcher.forward(request, response);
+		if(result) {
+			response.sendRedirect("/servletExample/list");
+		} else {
+			request.setAttribute("message", "학과 삭제 실패!");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("error/error.jsp");
+			dispatcher.forward(request, response);
+		}	
 	}
 }

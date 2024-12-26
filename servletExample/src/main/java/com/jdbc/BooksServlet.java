@@ -10,37 +10,34 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.subject.SubjectDAO;
-import com.subject.SubjectVO;
+import com.books.BooksDAO;
+import com.books.BooksVO;
 
 /**
- * Servlet implementation class SubjectServlet
+ * Servlet implementation class BooksServlet
  */
-@WebServlet("/list")
-public class SubjectServlet extends HttpServlet {
+@WebServlet("/booksList")
+public class BooksServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public BooksServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		/*
-		 * SubjectDAO dao = new SubjectDAO();
-		 *  ArrayList<SubjectVO> list = dao.getSubjectTotal();
-		 */
+		BooksDAO dao = new BooksDAO();
+		ArrayList<BooksVO> list = dao.getBooksTotal();
 		
-		SubjectVO vo = null;
-		String subjectName = request.getParameter("subjectName");
-		if(subjectName != null) {
-			vo = new SubjectVO();
-			vo.setSubjectName(subjectName);
-		}
-		
-		SubjectDAO dao = new SubjectDAO();
-		ArrayList<SubjectVO> list = dao.getSubjectTotal(vo);
 		request.setAttribute("list", list);
-		
-		RequestDispatcher dispatcher = request.getRequestDispatcher("subject/subjectList.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("books/BooksList.jsp");
 		dispatcher.forward(request, response);
 	}
+
 }
